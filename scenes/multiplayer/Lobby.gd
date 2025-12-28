@@ -1,11 +1,11 @@
 extends Control
 
-@export var ip_input: LineEdit
+@export var ipInput: LineEdit
 
 func _on_host_pressed():
-	HighLevelNetworkHandler.start_server()
+	NetworkManager._start_server()
 	get_tree().change_scene_to_file("res://scenes/maps/Arena01.tscn")
 
 func _on_join_pressed():
-	HighLevelNetworkHandler.start_client(ip_input.text)
+	NetworkManager._start_client(ipInput.text)
 	get_tree().change_scene_to_file("res://scenes/maps/Arena01.tscn")

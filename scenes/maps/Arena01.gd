@@ -1,6 +1,6 @@
 extends Node2D
 
-@export var player_scene: PackedScene
+@export var playerScene: PackedScene
 @export var spawnpoint: Node2D
 
 func _ready():
@@ -21,7 +21,7 @@ func _on_peer_disconnected(id: int):
 		get_node(str(id)).queue_free()
 
 func _spawn_player(id: int):
-	var player := player_scene.instantiate()
+	var player := playerScene.instantiate()
 	player.name = str(id)
 	player.global_position = spawnpoint.global_position
 	add_child(player)
