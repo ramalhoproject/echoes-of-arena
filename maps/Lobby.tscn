@@ -1,0 +1,37 @@
+[gd_scene load_steps=3 format=3 uid="uid://wryk4sn3mfdc"]
+
+[ext_resource type="Script" uid="uid://uv8st0ke02i7" path="res://maps/Lobby.gd" id="1_jor2k"]
+[ext_resource type="PackedScene" uid="uid://bpku7lobtyenm" path="res://maps/Arena01.tscn" id="2_71o6c"]
+
+[node name="Lobby" type="Control" node_paths=PackedStringArray("ipInput")]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_jor2k")
+ipInput = NodePath("VBoxContainer/IP")
+arena01 = ExtResource("2_71o6c")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 488.0
+offset_top = 277.0
+offset_right = 693.0
+offset_bottom = 378.0
+
+[node name="Host" type="Button" parent="VBoxContainer"]
+modulate = Color(0.17090064, 0.99559337, 1, 1)
+layout_mode = 2
+text = "Host"
+
+[node name="Join" type="Button" parent="VBoxContainer"]
+modulate = Color(0.35635033, 0.6762428, 1, 1)
+layout_mode = 2
+text = "Join"
+
+[node name="IP" type="LineEdit" parent="VBoxContainer"]
+layout_mode = 2
+placeholder_text = "IP do servidor"
+alignment = 1
+
+[connection signal="pressed" from="VBoxContainer/Host" to="." method="testando"]
+[connection signal="pressed" from="VBoxContainer/Host" to="." method="_on_host_pressed"]
+[connection signal="pressed" from="VBoxContainer/Join" to="." method="_on_join_pressed"]

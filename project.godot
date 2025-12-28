@@ -10,13 +10,13 @@ config_version=5
 
 [application]
 
-config/name="Echoes of Arena GITHUB"
+config/name="Echoes of Arena"
 run/main_scene="uid://wryk4sn3mfdc"
 config/features=PackedStringArray("4.5", "Forward Plus")
 
 [autoload]
 
-NetworkManager="*res://scripts/multiplayer/NetworkManager.gd"
+NetworkManager="*res://core/NetworkManager.gd"
 
 [input]
 
