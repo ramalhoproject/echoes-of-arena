@@ -1,42 +1,47 @@
-[gd_scene load_steps=7 format=3 uid="uid://c4p235atv2hkb"]
+[gd_scene load_steps=8 format=3 uid="uid://c4p235atv2hkb"]
 
 [ext_resource type="Script" uid="uid://cwmhcwd72ibkt" path="res://player/PlayerMovement.gd" id="1_gfjak"]
 [ext_resource type="Texture2D" uid="uid://brfnno6amr6wl" path="res://assets/white_square.png" id="2_gfjak"]
-[ext_resource type="Script" uid="uid://bbcdp1e8iqwmr" path="res://player/PlayerCustomization.gd" id="3_83hs8"]
+[ext_resource type="Script" uid="uid://bbcdp1e8iqwmr" path="res://player/PlayerVisual.gd" id="3_83hs8"]
 [ext_resource type="Script" uid="uid://h6p1av6jpyjb" path="res://player/CameraPlayer.gd" id="3_wnvi2"]
+[ext_resource type="Script" uid="uid://cyq5b6uob4l76" path="res://player/PlayerInput.gd" id="5_x8kxw"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4kuee"]
 size = Vector2(32, 32)
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_gfjak"]
-properties/0/path = NodePath(".:position")
+properties/0/path = NodePath("PlayerName:text")
 properties/0/spawn = true
 properties/0/replication_mode = 1
-properties/1/path = NodePath("Sprite2D:modulate")
+properties/1/path = NodePath(".:position")
 properties/1/spawn = true
 properties/1/replication_mode = 1
-properties/2/path = NodePath(".:motion_mode")
+properties/2/path = NodePath("PlayerVisual:modulate")
 properties/2/spawn = true
 properties/2/replication_mode = 1
-properties/3/path = NodePath("PlayerName:text")
-properties/3/spawn = true
-properties/3/replication_mode = 1
 
-[node name="Player" type="CharacterBody2D"]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("playerInput")]
 script = ExtResource("1_gfjak")
+playerInput = NodePath("PlayerInput")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="PlayerVisual" type="Sprite2D" parent="." node_paths=PackedStringArray("sprite", "playerNameLabel")]
 texture = ExtResource("2_gfjak")
 script = ExtResource("3_83hs8")
+sprite = NodePath(".")
+playerNameLabel = NodePath("../PlayerName")
+
+[node name="PlayerInput" type="Node2D" parent="."]
+script = ExtResource("5_x8kxw")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+script = ExtResource("3_wnvi2")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_4kuee")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_gfjak")
-
-[node name="Camera2D" type="Camera2D" parent="."]
-script = ExtResource("3_wnvi2")
+visibility_update_mode = 1
 
 [node name="PlayerName" type="Label" parent="."]
 anchors_preset = 8

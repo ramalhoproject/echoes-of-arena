@@ -2,10 +2,10 @@ extends Node
 # Script responsável apenas pela identidade visual do player.
 # Controla a geração, aplicação e sincronização da cor do player no multiplayer.
 
-@onready var sprite := $"../Sprite2D"
+@export var sprite: Sprite2D
 # Referência ao Sprite2D do Player.
 
-@onready var playerNameLabel := $"../PlayerName"
+@export var playerNameLabel: Label
 # Referência ao Label do Player.
 
 var playerColor: Color

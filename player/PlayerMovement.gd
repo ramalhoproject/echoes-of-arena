@@ -6,6 +6,8 @@ extends CharacterBody2D
 @export var jumpForce := 550 # Força aplicada ao pulo
 @export var gravity := 1200 # Valor da gravidade aplicada quando o player está no ar
 
+@export var playerInput: Node2D
+
 func _enter_tree():
 	# O nome do node é o peer_id (definido pelo servidor no spawn)
 	var player_id := str(name).to_int()
@@ -33,11 +35,10 @@ func _physics_process(delta):
 		velocity.y += gravity * delta
 	
 	# Captura input horizontal
-	var dir := Input.get_axis("ui_left", "ui_right")
-	velocity.x = dir * speed
+	velocity.x = playerInput.movementDirection * speed
 	
 	# Executa pulo se estiver no chão
-	if Input.is_action_just_pressed("ui_up") and is_on_floor():
+	if playerInput.jumpPressed and is_on_floor():
 		velocity.y = -jumpForce
 	
 	# Move o player respeitando colisões
