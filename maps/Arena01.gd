@@ -36,12 +36,8 @@ func _spawn_player(id: int):
 	# Instancia a cena do player
 	var player := playerScene.instantiate()
 	
-	# Define o nome do node como o ID do peer
-	# Isso é essencial para o Multiplayer funcionar corretamente
+	# Define o nome como peer_id (ESSENCIAL)
 	player.name = str(id)
 	
-	# Posiciona o player no spawnpoint da arena
-	player.global_position = spawnpoint.global_position
-	
-	# Adiciona o player à cena
+	# Adiciona à cena
 	add_child(player)
