@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="CharacterData" load_steps=2 format=3 uid="uid://bcpnsm0ncinrw"]
+
+[ext_resource type="Script" uid="uid://cvfson8i7udut" path="res://player/characters/CharacterData.gd" id="1_l4g50"]
+
+[resource]
+script = ExtResource("1_l4g50")
+character_id = "assassin"
+display_name = "Assassino"
+max_health = 80
+move_speed = 320
+abilities = Array[String](["Shadow Dash", "Backstab", "Smoke Veil", "Execution Protocol"])
+metadata/_custom_type_script = "uid://cvfson8i7udut"

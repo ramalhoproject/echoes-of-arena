@@ -48,4 +48,3 @@ func _reset_network(mensagem: String = ""):
 	
 	# Volta para a cena do Lobby (ajuste o caminho se necessário)
 	get_tree().change_scene_to_file("res://maps/Lobby.tscn")
-	

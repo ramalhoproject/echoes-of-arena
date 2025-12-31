@@ -19,6 +19,9 @@ func _ready():
 		_notificar_erro(NetworkManager.mensagem_pendente, Color.DARK_ORANGE)
 		# Limpa a mensagem para não aparecer de novo se o player resetar o lobby manualmente
 		NetworkManager.mensagem_pendente = ""
+	
+	# Seta o nickname já preenchido em no último lobby
+	nickName.text = NetworkManager.local_nickname
 
 func _on_host_pressed():
 	if nickName.text.is_empty():
@@ -49,7 +52,6 @@ func _on_join_pressed():
 	nickName.editable = true
 
 func _on_connection_success():
-	# Só entramos na arena se o servidor respondeu!
 	get_tree().change_scene_to_packed(arena01)
 
 func _on_connection_fail():
@@ -63,3 +65,11 @@ func _notificar_erro(message: String, color: Color):
 func _on_server_disconnected():
 	# Resetamos a rede e voltamos ao lobby
 	NetworkManager._reset_network("O Servidor caiu ou foi fechado")
+
+
+func _on_cryomancer_button_pressed() -> void:
+	pass # Replace with function body.
+
+
+func _on_assassin_button_pressed() -> void:
+	pass # Replace with function body.

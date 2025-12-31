@@ -95,6 +95,23 @@ theme_override_font_sizes/font_size = 24
 placeholder_text = "IP do servidor"
 alignment = 1
 
-[connection signal="pressed" from="Container/HostContainer/Host" to="." method="_on_host_pressed"]
+[node name="ItemList" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 242.0
+offset_top = 296.0
+offset_right = 345.0
+offset_bottom = 362.0
+
+[node name="CryomancerButton" type="Button" parent="ItemList"]
+layout_mode = 2
+text = "Cryomancer"
+
+[node name="AssassinButton" type="Button" parent="ItemList"]
+layout_mode = 2
+text = "Assassin"
+
 [connection signal="pressed" from="Container/HostContainer/Host" to="." method="testando"]
+[connection signal="pressed" from="Container/HostContainer/Host" to="." method="_on_host_pressed"]
 [connection signal="pressed" from="Container/ClientContainer/Join" to="." method="_on_join_pressed"]
+[connection signal="pressed" from="ItemList/CryomancerButton" to="." method="_on_cryomancer_button_pressed"]
+[connection signal="pressed" from="ItemList/AssassinButton" to="." method="_on_assassin_button_pressed"]

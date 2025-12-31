@@ -2,7 +2,7 @@ extends Node2D
 # Cena principal da arena.
 # Responsável por gerenciar spawn e remoção de players no multiplayer.
 
-var playerScene: PackedScene = preload("res://player/Player.tscn")
+var playerScene: PackedScene = preload("res://player/base/Player.tscn")
 # Cena base do player que será instanciada para cada peer conectado.
 
 @onready var playersContainer = $Players
