@@ -1,0 +1,37 @@
+[gd_scene load_steps=4 format=3 uid="uid://bds4ubrujasui"]
+
+[ext_resource type="Script" uid="uid://63edqie4btwf" path="res://core/ChatInGame.gd" id="1_5a1b1"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5a1b1"]
+bg_color = Color(0.13319641, 0.13319641, 0.13319635, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mfnvv"]
+bg_color = Color(0.1620658, 0.16206554, 0.16206539, 1)
+
+[node name="InterfaceChat" type="CanvasLayer" groups=["InterfaceChatGroup"]]
+script = ExtResource("1_5a1b1")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -221.0
+offset_right = 223.0
+grow_vertical = 0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(223, 186)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_5a1b1")
+
+[node name="ChatBox" type="VBoxContainer" parent="VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="ChatInput" type="LineEdit" parent="VBoxContainer" groups=["ChatInputGroup"]]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8819366, 0.8819366, 0.88193655, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_mfnvv")

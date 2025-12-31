@@ -14,6 +14,8 @@ var player_names : Dictionary = {} # Mapeia { id: "nome" }
 
 var local_player_color : Color
 
+var mensagem_pendente: String = ""
+
 func _start_server():
 	# Cria um novo peer ENet
 	var peer := ENetMultiplayerPeer.new()
@@ -33,3 +35,17 @@ func _start_client(ip: String):
 	
 	# Define este peer como o multiplayer ativo do jogo
 	multiplayer.multiplayer_peer = peer
+
+func _reset_network(mensagem: String = ""):
+	# Fecha a conexão atual
+	multiplayer.multiplayer_peer = null
+	
+	# Limpa a lista de nomes para a próxima partida
+	player_names.clear()
+	
+	# Guardamos a mensagem antes de mudar a cena
+	mensagem_pendente = mensagem
+	
+	# Volta para a cena do Lobby (ajuste o caminho se necessário)
+	get_tree().change_scene_to_file("res://maps/Lobby.tscn")
+	

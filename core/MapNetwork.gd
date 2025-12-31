@@ -36,17 +36,21 @@ func _ready():
 	# Conecta o sinal emitido quando um cliente sai da sessão
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 	
+	# Caso o cliente perca a conexão enquanto está na Arena
+	multiplayer.server_disconnected.connect(_on_host_lost)
+	
 	# Verifica se a instância atual é o servidor
 	if multiplayer.is_server():
 		# O Host registra seu próprio nome no dicionário do servidor
 		NetworkManager.player_names[1] = NetworkManager.local_nickname
+		
 		# Cria o player local do próprio host imediatamente
 		_spawn_player(1)
 	else:
 		# Se for um cliente, envia um RPC para o servidor registrando seu nickname
 		rpc_id(1, "_server_register_name", NetworkManager.local_nickname)
 
-func _on_peer_connected(id: int):
+func _on_peer_connected(_id: int):
 	# O servidor detecta a conexão, mas para clientes, esperamos o RPC de registro de nome.
 	# Não realizamos o spawn aqui para evitar que o player nasça sem o nickname correto.
 	pass
@@ -61,6 +65,17 @@ func _server_register_name(nick: String):
 	
 	# Agora que o servidor conhece o nick, ele solicita o spawn do player
 	_spawn_player(sender_id)
+	
+	# --- MENSAGEM DE CONEXÃO NO CHAT ---
+	# O servidor avisa a todos que esse player entrou.
+	# Vamos definir uma cor cinza ou branca para mensagens de sistema,
+	# ou usar a cor que o player acabou de ganhar.
+	var mensagem = "conectou-se"
+	
+	# Chamamos o RPC do chat (que deve estar no mesmo grupo ou acessível)
+	var chat = get_tree().get_first_node_in_group("InterfaceChatGroup")
+	if chat:
+		chat.rpc("_receive_message", nick, mensagem, Color.GREEN, true)
 
 func _spawn_player(id: int):
 	# Função auxiliar do servidor para calcular posição e disparar o spawn
@@ -93,10 +108,21 @@ func _custom_spawn(data: Variant) -> Node:
 	return player
 
 func _on_peer_disconnected(id: int):
-	# Limpa o nome do jogador do dicionário do servidor ao desconectar
 	if multiplayer.is_server():
+		# Pega o nome do player antes de apagar do dicionário
+		var nick = NetworkManager.player_names.get(id, "Player_" + str(id))
+		
+		# Avisa no chat que o player saiu
+		var chat = get_tree().get_first_node_in_group("InterfaceChatGroup")
+		if chat:
+			chat.rpc("_receive_message", nick, "desconectou-se", Color.CORAL, true)
+		
+		# Limpa os dados
 		NetworkManager.player_names.erase(id)
 	
-	# Remove o nó do jogador da cena caso ele ainda exista
 	if playersContainer.has_node(str(id)):
 		playersContainer.get_node(str(id)).queue_free()
+
+func _on_host_lost():
+	# Feedback antes de resetar (opcional)
+	NetworkManager._reset_network("Host desligou o servidor")

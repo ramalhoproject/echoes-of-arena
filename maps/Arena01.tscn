@@ -2,7 +2,8 @@
 
 [ext_resource type="Texture2D" uid="uid://brfnno6amr6wl" path="res://assets/white_square.png" id="1_kjcu6"]
 [ext_resource type="Script" uid="uid://fmgey0odkx0d" path="res://core/MapNetwork.gd" id="2_vhyy6"]
-[ext_resource type="Script" uid="uid://63edqie4btwf" path="res://core/ChatInGame.gd" id="3_1els6"]
+[ext_resource type="PackedScene" uid="uid://bds4ubrujasui" path="res://maps/InterfaceChat.tscn" id="3_jmv1n"]
+[ext_resource type="PackedScene" uid="uid://cmpto7dxw36hm" path="res://maps/PauseMenu.tscn" id="4_jmv1n"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_vhyy6"]
 texture = ExtResource("1_kjcu6")
@@ -15,9 +16,6 @@ tile_size = Vector2i(32, 32)
 physics_layer_0/collision_layer = 1
 physics_layer_0/collision_mask = 0
 sources/1 = SubResource("TileSetAtlasSource_vhyy6")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1els6"]
-bg_color = Color(0.14406255, 0.14406255, 0.14406249, 0.5647059)
 
 [node name="Arena01" type="Node2D"]
 script = ExtResource("2_vhyy6")
@@ -47,26 +45,6 @@ position = Vector2(232, 545)
 [node name="Spawnpoint4" type="Marker2D" parent="Spawnpoints"]
 position = Vector2(562, 68)
 
-[node name="InterfaceChat" type="CanvasLayer" parent="."]
-script = ExtResource("3_1els6")
+[node name="InterfaceChat" parent="." instance=ExtResource("3_jmv1n")]
 
-[node name="ScrollContainer" type="ScrollContainer" parent="InterfaceChat"]
-custom_minimum_size = Vector2(223, 186)
-offset_left = -1.0
-offset_top = 35.0
-offset_right = 222.0
-offset_bottom = 221.0
-mouse_filter = 2
-
-[node name="ChatBox" type="VBoxContainer" parent="InterfaceChat/ScrollContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-mouse_filter = 2
-
-[node name="ChatInput" type="LineEdit" parent="InterfaceChat" groups=["ChatInputGroup"]]
-offset_left = 3.0
-offset_top = 3.0
-offset_right = 219.0
-offset_bottom = 34.0
-theme_override_styles/normal = SubResource("StyleBoxFlat_1els6")
+[node name="PauseMenu" parent="." instance=ExtResource("4_jmv1n")]

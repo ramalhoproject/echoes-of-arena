@@ -10,10 +10,20 @@ func _ready():
 	# Conecta os sinais do multiplayer para reagir ao sucesso ou falha
 	multiplayer.connected_to_server.connect(_on_connection_success)
 	multiplayer.connection_failed.connect(_on_connection_fail)
+	
+	# Este sinal é disparado no CLIENTE quando o servidor cai
+	multiplayer.server_disconnected.connect(_on_server_disconnected)
+	
+	# VERIFICAÇÃO DE MENSAGEM AO CARREGAR
+	if NetworkManager.mensagem_pendente != "":
+		_notificar_erro(NetworkManager.mensagem_pendente, Color.DARK_ORANGE)
+		# Limpa a mensagem para não aparecer de novo se o player resetar o lobby manualmente
+		NetworkManager.mensagem_pendente = ""
 
 func _on_host_pressed():
 	if nickName.text.is_empty():
-		_notificar_erro_nick()
+		_notificar_erro("Digite seu nickname", Color.RED)
+		nickName.grab_focus()
 		return
 	
 	# Salva o nick e inicia servidor
@@ -25,7 +35,8 @@ func _on_host_pressed():
 
 func _on_join_pressed():
 	if nickName.text.is_empty():
-		_notificar_erro_nick()
+		_notificar_erro("Digite seu nickname", Color.RED)
+		nickName.grab_focus()
 		return
 		
 	# Salva o nick, mas NÃO muda de cena ainda
@@ -43,11 +54,12 @@ func _on_connection_success():
 
 func _on_connection_fail():
 	# Se não encontrar o host, reativa os botões e avisa
-	nickName.editable = false
-	nickName.text = ""
-	connectionStatus.text = "Falha ao conectar!"
+	connectionStatus.text = "Falha ao conectar"
 
-func _notificar_erro_nick():
-	connectionStatus.text = "Digite seu nickname"
-	connectionStatus.modulate = Color.RED
-	nickName.grab_focus()
+func _notificar_erro(message: String, color: Color):
+	connectionStatus.text = message
+	connectionStatus.modulate = color
+
+func _on_server_disconnected():
+	# Resetamos a rede e voltamos ao lobby
+	NetworkManager._reset_network("O Servidor caiu ou foi fechado")
