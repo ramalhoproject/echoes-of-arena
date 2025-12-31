@@ -7,6 +7,9 @@ extends CharacterBody2D
 @export var gravity := 1200 # Valor da gravidade aplicada quando o player está no ar
 
 @export var playerInput: Node2D
+# Referência o filho PlayerInput
+
+var spawnPosition: Vector2
 
 func _enter_tree():
 	# O nome do node é o peer_id (definido pelo servidor no spawn)
@@ -17,10 +20,6 @@ func _enter_tree():
 	
 	# Define a autoridade DO MULTIPLAYER SYNCHRONIZER
 	$MultiplayerSynchronizer.set_multiplayer_authority(player_id)
-	
-	if is_multiplayer_authority():
-		# Posiciona o player no spawnpoint da arena
-		global_position = $"../Spawnpoint".global_position
 
 func _ready():
 	# Se este player NÃO for controlado localmente,
