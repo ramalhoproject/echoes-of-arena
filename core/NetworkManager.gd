@@ -12,6 +12,8 @@ var local_nickname : String = ""
 # Armazena o nome do jogador local para ser usado durante o spawn
 var player_names : Dictionary = {} # Mapeia { id: "nome" }
 
+var local_player_color : Color
+
 func _start_server():
 	# Cria um novo peer ENet
 	var peer := ENetMultiplayerPeer.new()

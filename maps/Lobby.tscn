@@ -78,6 +78,7 @@ text = "Seu nickname:"
 [node name="Nickname" type="LineEdit" parent="Container/NicknameContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
+text = "Stundy"
 placeholder_text = "Nickname in-game"
 alignment = 1
 

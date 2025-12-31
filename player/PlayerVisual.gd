@@ -25,6 +25,10 @@ func _ready():
 	# Hue (matiz) aleatório, saturação alta e brilho alto
 	playerColor = Color.from_hsv(randf(), 0.8, 0.9)
 	
+	# SALVE A COR NO NETWORK MANAGER:
+	# Assim, o chat sempre saberá qual é a cor do jogador local.
+	NetworkManager.local_player_color = playerColor
+	
 	# Aplica a cor localmente no sprite
 	_apply_color(playerColor)
 	
