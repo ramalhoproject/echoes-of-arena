@@ -1,8 +1,7 @@
-[gd_scene load_steps=6 format=4 uid="uid://bpku7lobtyenm"]
+[gd_scene load_steps=5 format=4 uid="uid://bpku7lobtyenm"]
 
 [ext_resource type="Texture2D" uid="uid://brfnno6amr6wl" path="res://assets/white_square.png" id="1_kjcu6"]
-[ext_resource type="Script" uid="uid://fmgey0odkx0d" path="res://maps/Arena01.gd" id="2_vhyy6"]
-[ext_resource type="PackedScene" uid="uid://c4p235atv2hkb" path="res://player/Player.tscn" id="3_v461v"]
+[ext_resource type="Script" uid="uid://fmgey0odkx0d" path="res://maps/MapNetwork.gd" id="2_vhyy6"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_vhyy6"]
 texture = ExtResource("1_kjcu6")
@@ -18,7 +17,6 @@ sources/1 = SubResource("TileSetAtlasSource_vhyy6")
 
 [node name="Arena01" type="Node2D"]
 script = ExtResource("2_vhyy6")
-playerScene = ExtResource("3_v461v")
 
 [node name="Players" type="Node2D" parent="."]
 

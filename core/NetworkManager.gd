@@ -8,6 +8,10 @@ const port := 42069
 const maxPlayers := 4
 # Número máximo de jogadores permitidos no servidor
 
+var local_nickname : String = ""
+# Armazena o nome do jogador local para ser usado durante o spawn
+var player_names : Dictionary = {} # Mapeia { id: "nome" }
+
 func _start_server():
 	# Cria um novo peer ENet
 	var peer := ENetMultiplayerPeer.new()

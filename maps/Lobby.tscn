@@ -3,35 +3,98 @@
 [ext_resource type="Script" uid="uid://uv8st0ke02i7" path="res://maps/Lobby.gd" id="1_jor2k"]
 [ext_resource type="PackedScene" uid="uid://bpku7lobtyenm" path="res://maps/Arena01.tscn" id="2_71o6c"]
 
-[node name="Lobby" type="Control" node_paths=PackedStringArray("ipInput")]
+[node name="Lobby" type="Control" node_paths=PackedStringArray("ipInput", "nickName", "connectionStatus")]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_jor2k")
-ipInput = NodePath("VBoxContainer/IP")
+ipInput = NodePath("Container/IPContainer/IP")
+nickName = NodePath("Container/NicknameContainer/Nickname")
 arena01 = ExtResource("2_71o6c")
+connectionStatus = NodePath("ConnectionStatus")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="GameName" type="Label" parent="."]
 layout_mode = 0
-offset_left = 488.0
-offset_top = 277.0
-offset_right = 693.0
-offset_bottom = 378.0
+offset_left = 171.0
+offset_top = 64.0
+offset_right = 1030.0005
+offset_bottom = 216.0
+theme_override_font_sizes/font_size = 111
+text = "Echoes of Arena"
 
-[node name="Host" type="Button" parent="VBoxContainer"]
+[node name="ConnectionStatus" type="Label" parent="."]
+layout_mode = 0
+offset_left = 785.0
+offset_top = 316.0
+offset_right = 1138.0
+offset_bottom = 350.0
+theme_override_font_sizes/font_size = 24
+
+[node name="Container" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 414.0
+offset_top = 250.0
+offset_right = 839.0
+offset_bottom = 551.0
+theme_override_constants/separation = 19
+
+[node name="HostContainer" type="HBoxContainer" parent="Container"]
+layout_mode = 2
+alignment = 1
+
+[node name="HostLabel" type="Label" parent="Container/HostContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Hostear partida: "
+
+[node name="Host" type="Button" parent="Container/HostContainer"]
 modulate = Color(0.17090064, 0.99559337, 1, 1)
 layout_mode = 2
-text = "Host"
+theme_override_font_sizes/font_size = 24
+text = "Hostear"
 
-[node name="Join" type="Button" parent="VBoxContainer"]
+[node name="ClientContainer" type="HBoxContainer" parent="Container"]
+layout_mode = 2
+alignment = 1
+
+[node name="JoinLabel" type="Label" parent="Container/ClientContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Entrar na partida: "
+
+[node name="Join" type="Button" parent="Container/ClientContainer"]
 modulate = Color(0.35635033, 0.6762428, 1, 1)
 layout_mode = 2
-text = "Join"
+theme_override_font_sizes/font_size = 24
+text = "Entrar"
 
-[node name="IP" type="LineEdit" parent="VBoxContainer"]
+[node name="NicknameContainer" type="VBoxContainer" parent="Container"]
 layout_mode = 2
+
+[node name="NicknameLabel" type="Label" parent="Container/NicknameContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Seu nickname:"
+
+[node name="Nickname" type="LineEdit" parent="Container/NicknameContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+placeholder_text = "Nickname in-game"
+alignment = 1
+
+[node name="IPContainer" type="VBoxContainer" parent="Container"]
+layout_mode = 2
+
+[node name="IPLabel" type="Label" parent="Container/IPContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Digite o IP do servidor:"
+
+[node name="IP" type="LineEdit" parent="Container/IPContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
 placeholder_text = "IP do servidor"
 alignment = 1
 
-[connection signal="pressed" from="VBoxContainer/Host" to="." method="testando"]
-[connection signal="pressed" from="VBoxContainer/Host" to="." method="_on_host_pressed"]
-[connection signal="pressed" from="VBoxContainer/Join" to="." method="_on_join_pressed"]
+[connection signal="pressed" from="Container/HostContainer/Host" to="." method="testando"]
+[connection signal="pressed" from="Container/HostContainer/Host" to="." method="_on_host_pressed"]
+[connection signal="pressed" from="Container/ClientContainer/Join" to="." method="_on_join_pressed"]

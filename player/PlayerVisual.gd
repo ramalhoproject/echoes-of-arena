@@ -31,9 +31,12 @@ func _ready():
 	# Envia a cor gerada para todos os outros peers
 	# call_local garante que o método também seja executado localmente
 	rpc("_set_color", playerColor)
-	
-	# Seta o nome do Label para o do player
-	playerNameLabel.text = player.name
+
+# No script do PLAYER (Identidade)
+func setup_identity(data: Dictionary):
+	# Esta função será chamada logo após o spawn
+	playerNameLabel.text = data.nick
+	# Se a cor também vier no data, você evita usar RPCs extras
 
 @rpc("any_peer", "call_local")
 func _set_color(color: Color):
