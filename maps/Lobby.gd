@@ -15,22 +15,30 @@ func _ready():
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
 	
 	# VERIFICAÇÃO DE MENSAGEM AO CARREGAR
-	if NetworkManager.mensagem_pendente != "":
-		_notificar_erro(NetworkManager.mensagem_pendente, Color.DARK_ORANGE)
+	if NetworkManager.mensagemPendente != "":
+		_notificar_player(NetworkManager.mensagemPendente, Color.DARK_ORANGE)
 		# Limpa a mensagem para não aparecer de novo se o player resetar o lobby manualmente
-		NetworkManager.mensagem_pendente = ""
+		NetworkManager.mensagemPendente = ""
 	
 	# Seta o nickname já preenchido em no último lobby
-	nickName.text = NetworkManager.local_nickname
+	nickName.text = NetworkManager.localNickname
+	
+	# Supondo que seus botões estão todos dentro de um nó chamado "WeatherContainer"
+	var botoes = $SelecaoClima/WheaterButtons.get_children()
+	
+	for i in range(botoes.size()):
+		var botao = botoes[i]
+		# Conectamos o sinal 'pressed' e usamos o .bind(i) para enviar o índice do loop
+		botao.pressed.connect(_on_clima_selecionado.bind(i))
 
 func _on_host_pressed():
 	if nickName.text.is_empty():
-		_notificar_erro("Digite seu nickname", Color.RED)
+		_notificar_player("Digite seu nickname", Color.RED)
 		nickName.grab_focus()
 		return
 	
 	# Salva o nick e inicia servidor
-	NetworkManager.local_nickname = nickName.text
+	NetworkManager.localNickname = nickName.text
 	NetworkManager._start_server()
 	
 	# Como host é o servidor, ele pode mudar de cena na hora
@@ -38,12 +46,12 @@ func _on_host_pressed():
 
 func _on_join_pressed():
 	if nickName.text.is_empty():
-		_notificar_erro("Digite seu nickname", Color.RED)
+		_notificar_player("Digite seu nickname", Color.RED)
 		nickName.grab_focus()
 		return
 		
 	# Salva o nick, mas NÃO muda de cena ainda
-	NetworkManager.local_nickname = nickName.text
+	NetworkManager.localNickname = nickName.text
 	NetworkManager._start_client(ipInput.text)
 	
 	# Feedback visual (opcional)
@@ -58,7 +66,7 @@ func _on_connection_fail():
 	# Se não encontrar o host, reativa os botões e avisa
 	connectionStatus.text = "Falha ao conectar"
 
-func _notificar_erro(message: String, color: Color):
+func _notificar_player(message: String, color: Color):
 	connectionStatus.text = message
 	connectionStatus.modulate = color
 
@@ -66,10 +74,15 @@ func _on_server_disconnected():
 	# Resetamos a rede e voltamos ao lobby
 	NetworkManager._reset_network("O Servidor caiu ou foi fechado")
 
-
 func _on_cryomancer_button_pressed() -> void:
-	pass # Replace with function body.
-
+	NetworkManager.selected_character = "cryomancer"
+	_notificar_player("Cryomancer selecionado", Color.AQUA)
 
 func _on_assassin_button_pressed() -> void:
-	pass # Replace with function body.
+	NetworkManager.selected_character = "assassin"
+	_notificar_player("Assassin selecionado", Color.BLACK)
+
+
+func _on_clima_selecionado(clima_id: int):
+	NetworkManager.backgroundEscolhido = clima_id
+	_notificar_player(str("Fundo ", clima_id + 1, " selecionado"), Color.CORNSILK)

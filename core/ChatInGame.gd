@@ -112,8 +112,8 @@ func _on_chat_input_submitted(newText: String):
 		return
 	
 	# Pega os dados do jogador local salvos no NetworkManager
-	var senderName = NetworkManager.local_nickname
-	var senderColor = NetworkManager.local_player_color
+	var senderName = NetworkManager.localNickname
+	var senderColor = NetworkManager.localPlayerColor
 	
 	# Chama a função RPC em todos os jogadores (incluindo em si mesmo)
 	rpc("_receive_message", senderName, newText, senderColor, false)

@@ -1,117 +1,238 @@
-[gd_scene load_steps=3 format=3 uid="uid://wryk4sn3mfdc"]
+[gd_scene load_steps=14 format=3 uid="uid://wryk4sn3mfdc"]
 
 [ext_resource type="Script" uid="uid://uv8st0ke02i7" path="res://maps/Lobby.gd" id="1_jor2k"]
 [ext_resource type="PackedScene" uid="uid://bpku7lobtyenm" path="res://maps/Arena01.tscn" id="2_71o6c"]
+[ext_resource type="Texture2D" uid="uid://djij0htahhlgt" path="res://assets/Clouds/Clouds 1/1.png" id="3_arljt"]
+[ext_resource type="Texture2D" uid="uid://bactspp8hw0nv" path="res://assets/Cryomancer Icon.png" id="3_ddprd"]
+[ext_resource type="Texture2D" uid="uid://ckqh8eywwa1wt" path="res://assets/Clouds/Clouds 2/1.png" id="4_l3jjx"]
+[ext_resource type="Texture2D" uid="uid://jwm6tl0gblw8" path="res://assets/Assassin Icon.png" id="4_smn20"]
+[ext_resource type="ButtonGroup" uid="uid://rtpeoval7dtt" path="res://maps/WeatherButtonGroup.tres" id="5_l3jjx"]
+[ext_resource type="Texture2D" uid="uid://d1wlqorqxmnc" path="res://assets/Clouds/Clouds 3/1.png" id="5_niwgo"]
+[ext_resource type="Texture2D" uid="uid://b3h04jut786lp" path="res://assets/Clouds/Clouds 4/1.png" id="6_w1a84"]
+[ext_resource type="Texture2D" uid="uid://clpd52dyhpjqd" path="res://assets/Clouds/Clouds 5/1.png" id="7_m3oms"]
+[ext_resource type="Texture2D" uid="uid://d3lqdudhv87s4" path="res://assets/Clouds/Clouds 6/1.png" id="8_7ahvd"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_niwgo"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 15
+border_width_top = 15
+border_width_right = 15
+border_width_bottom = 15
+border_color = Color(1, 1, 1, 1)
+expand_margin_left = 10.0
+expand_margin_top = 10.0
+expand_margin_right = 10.0
+expand_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l3jjx"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(1, 1, 1, 0.50980395)
+expand_margin_left = 10.0
+expand_margin_top = 10.0
+expand_margin_right = 10.0
+expand_margin_bottom = 10.0
 
 [node name="Lobby" type="Control" node_paths=PackedStringArray("ipInput", "nickName", "connectionStatus")]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_jor2k")
-ipInput = NodePath("Container/IPContainer/IP")
-nickName = NodePath("Container/NicknameContainer/Nickname")
+ipInput = NodePath("MenuInicial/IPContainer/IP")
+nickName = NodePath("MenuInicial/NicknameContainer/Nickname")
 arena01 = ExtResource("2_71o6c")
-connectionStatus = NodePath("ConnectionStatus")
+connectionStatus = NodePath("MenuInicial/ConnectionStatus")
 
 [node name="GameName" type="Label" parent="."]
 layout_mode = 0
-offset_left = 171.0
-offset_top = 64.0
-offset_right = 1030.0005
-offset_bottom = 216.0
-theme_override_font_sizes/font_size = 111
+offset_left = 26.0
+offset_top = 47.0
+offset_right = 723.0
+offset_bottom = 171.0
+theme_override_font_sizes/font_size = 90
 text = "Echoes of Arena"
 
-[node name="ConnectionStatus" type="Label" parent="."]
+[node name="MenuInicial" type="VBoxContainer" parent="."]
 layout_mode = 0
-offset_left = 415.0
-offset_top = 560.0
-offset_right = 840.0
-offset_bottom = 594.0
-theme_override_font_sizes/font_size = 24
-
-[node name="Container" type="VBoxContainer" parent="."]
-layout_mode = 0
-offset_left = 414.0
-offset_top = 250.0
-offset_right = 839.0
-offset_bottom = 551.0
+offset_left = 151.0
+offset_top = 201.0
+offset_right = 576.0
+offset_bottom = 555.0
 theme_override_constants/separation = 19
 
-[node name="HostContainer" type="HBoxContainer" parent="Container"]
+[node name="HostContainer" type="HBoxContainer" parent="MenuInicial"]
 layout_mode = 2
-alignment = 1
 
-[node name="HostLabel" type="Label" parent="Container/HostContainer"]
+[node name="HostLabel" type="Label" parent="MenuInicial/HostContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Hostear partida: "
 
-[node name="Host" type="Button" parent="Container/HostContainer"]
+[node name="Host" type="Button" parent="MenuInicial/HostContainer"]
 modulate = Color(0.17090064, 0.99559337, 1, 1)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Hostear"
 
-[node name="ClientContainer" type="HBoxContainer" parent="Container"]
+[node name="ClientContainer" type="HBoxContainer" parent="MenuInicial"]
 layout_mode = 2
-alignment = 1
 
-[node name="JoinLabel" type="Label" parent="Container/ClientContainer"]
+[node name="JoinLabel" type="Label" parent="MenuInicial/ClientContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Entrar na partida: "
 
-[node name="Join" type="Button" parent="Container/ClientContainer"]
+[node name="Join" type="Button" parent="MenuInicial/ClientContainer"]
 modulate = Color(0.35635033, 0.6762428, 1, 1)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Entrar"
 
-[node name="NicknameContainer" type="VBoxContainer" parent="Container"]
+[node name="NicknameContainer" type="VBoxContainer" parent="MenuInicial"]
 layout_mode = 2
 
-[node name="NicknameLabel" type="Label" parent="Container/NicknameContainer"]
+[node name="NicknameLabel" type="Label" parent="MenuInicial/NicknameContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Seu nickname:"
 
-[node name="Nickname" type="LineEdit" parent="Container/NicknameContainer"]
+[node name="Nickname" type="LineEdit" parent="MenuInicial/NicknameContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 placeholder_text = "Nickname in-game"
 alignment = 1
 
-[node name="IPContainer" type="VBoxContainer" parent="Container"]
+[node name="IPContainer" type="VBoxContainer" parent="MenuInicial"]
 layout_mode = 2
 
-[node name="IPLabel" type="Label" parent="Container/IPContainer"]
+[node name="IPLabel" type="Label" parent="MenuInicial/IPContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Digite o IP do servidor:"
 
-[node name="IP" type="LineEdit" parent="Container/IPContainer"]
+[node name="IP" type="LineEdit" parent="MenuInicial/IPContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 placeholder_text = "IP do servidor"
 alignment = 1
 
-[node name="ItemList" type="VBoxContainer" parent="."]
+[node name="ConnectionStatus" type="Label" parent="MenuInicial"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Comece uma partida..."
+horizontal_alignment = 1
+
+[node name="SelecaoPersonagem" type="Control" parent="."]
+anchors_preset = 0
+offset_left = 782.0
+offset_top = 89.0
+offset_right = 1097.0
+offset_bottom = 280.0
+
+[node name="Label" type="Label" parent="SelecaoPersonagem"]
 layout_mode = 0
-offset_left = 242.0
-offset_top = 296.0
-offset_right = 345.0
-offset_bottom = 362.0
+offset_right = 315.0
+offset_bottom = 34.0
+theme_override_font_sizes/font_size = 24
+text = "Selecione seu personagem:"
 
-[node name="CryomancerButton" type="Button" parent="ItemList"]
+[node name="ItemList" type="GridContainer" parent="SelecaoPersonagem"]
+layout_mode = 0
+offset_top = 34.0
+offset_right = 2068.0
+offset_bottom = 1066.0
+scale = Vector2(0.15, 0.15)
+columns = 2
+
+[node name="CryomancerButton" type="Button" parent="SelecaoPersonagem/ItemList"]
 layout_mode = 2
-text = "Cryomancer"
+theme_override_colors/font_hover_color = Color(0, 0.9490196, 0.9490196, 1)
+icon = ExtResource("3_ddprd")
 
-[node name="AssassinButton" type="Button" parent="ItemList"]
+[node name="AssassinButton" type="Button" parent="SelecaoPersonagem/ItemList"]
 layout_mode = 2
-text = "Assassin"
+icon = ExtResource("4_smn20")
 
-[connection signal="pressed" from="Container/HostContainer/Host" to="." method="testando"]
-[connection signal="pressed" from="Container/HostContainer/Host" to="." method="_on_host_pressed"]
-[connection signal="pressed" from="Container/ClientContainer/Join" to="." method="_on_join_pressed"]
-[connection signal="pressed" from="ItemList/CryomancerButton" to="." method="_on_cryomancer_button_pressed"]
-[connection signal="pressed" from="ItemList/AssassinButton" to="." method="_on_assassin_button_pressed"]
+[node name="SelecaoClima" type="Control" parent="."]
+anchors_preset = 0
+offset_left = 782.0
+offset_top = 300.0
+offset_right = 1103.0
+offset_bottom = 585.0
+
+[node name="Label" type="Label" parent="SelecaoClima"]
+layout_mode = 0
+offset_right = 342.0
+offset_bottom = 34.0
+theme_override_font_sizes/font_size = 24
+text = "Selecione o clima do mapa:"
+
+[node name="WheaterButtons" type="GridContainer" parent="SelecaoClima"]
+layout_mode = 0
+offset_top = 34.0
+offset_right = 1172.0
+offset_bottom = 1038.0
+scale = Vector2(0.265, 0.265)
+columns = 2
+
+[node name="WeatherButton1" type="Button" parent="SelecaoClima/WheaterButtons"]
+layout_mode = 2
+theme_override_colors/font_hover_color = Color(0, 0.9490196, 0.9490196, 1)
+theme_override_styles/pressed = SubResource("StyleBoxFlat_niwgo")
+theme_override_styles/hover = SubResource("StyleBoxFlat_l3jjx")
+toggle_mode = true
+button_group = ExtResource("5_l3jjx")
+icon = ExtResource("3_arljt")
+
+[node name="WeatherButton2" type="Button" parent="SelecaoClima/WheaterButtons"]
+layout_mode = 2
+theme_override_colors/font_hover_color = Color(0, 0.9490196, 0.9490196, 1)
+theme_override_styles/pressed = SubResource("StyleBoxFlat_niwgo")
+theme_override_styles/hover = SubResource("StyleBoxFlat_l3jjx")
+toggle_mode = true
+button_group = ExtResource("5_l3jjx")
+icon = ExtResource("4_l3jjx")
+
+[node name="WeatherButton3" type="Button" parent="SelecaoClima/WheaterButtons"]
+layout_mode = 2
+theme_override_colors/font_hover_color = Color(0, 0.9490196, 0.9490196, 1)
+theme_override_styles/pressed = SubResource("StyleBoxFlat_niwgo")
+theme_override_styles/hover = SubResource("StyleBoxFlat_l3jjx")
+toggle_mode = true
+button_group = ExtResource("5_l3jjx")
+icon = ExtResource("5_niwgo")
+
+[node name="WeatherButton4" type="Button" parent="SelecaoClima/WheaterButtons"]
+layout_mode = 2
+theme_override_colors/font_hover_color = Color(0, 0.9490196, 0.9490196, 1)
+theme_override_styles/pressed = SubResource("StyleBoxFlat_niwgo")
+theme_override_styles/hover = SubResource("StyleBoxFlat_l3jjx")
+toggle_mode = true
+button_group = ExtResource("5_l3jjx")
+icon = ExtResource("6_w1a84")
+
+[node name="WeatherButton5" type="Button" parent="SelecaoClima/WheaterButtons"]
+layout_mode = 2
+theme_override_colors/font_hover_color = Color(0, 0.9490196, 0.9490196, 1)
+theme_override_styles/pressed = SubResource("StyleBoxFlat_niwgo")
+theme_override_styles/hover = SubResource("StyleBoxFlat_l3jjx")
+toggle_mode = true
+button_group = ExtResource("5_l3jjx")
+icon = ExtResource("7_m3oms")
+
+[node name="WeatherButton6" type="Button" parent="SelecaoClima/WheaterButtons"]
+layout_mode = 2
+theme_override_colors/font_hover_color = Color(0, 0.9490196, 0.9490196, 1)
+theme_override_styles/pressed = SubResource("StyleBoxFlat_niwgo")
+theme_override_styles/hover = SubResource("StyleBoxFlat_l3jjx")
+toggle_mode = true
+button_group = ExtResource("5_l3jjx")
+icon = ExtResource("8_7ahvd")
+
+[connection signal="pressed" from="MenuInicial/HostContainer/Host" to="." method="testando"]
+[connection signal="pressed" from="MenuInicial/HostContainer/Host" to="." method="_on_host_pressed"]
+[connection signal="pressed" from="MenuInicial/ClientContainer/Join" to="." method="_on_join_pressed"]
+[connection signal="pressed" from="SelecaoPersonagem/ItemList/CryomancerButton" to="." method="_on_cryomancer_button_pressed"]
+[connection signal="pressed" from="SelecaoPersonagem/ItemList/AssassinButton" to="." method="_on_assassin_button_pressed"]

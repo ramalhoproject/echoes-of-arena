@@ -17,6 +17,48 @@ var playerScene: PackedScene = preload("res://player/base/Player.tscn")
 var pointsList = []
 # Array que armazenará as referências dos pontos de spawn
 
+# Arraste suas 6 texturas para este Array no Inspetor do Godot
+@onready var background : Array[Texture2D] = [
+	preload("res://assets/Clouds/Clouds 1/1.png"),
+	preload("res://assets/Clouds/Clouds 2/1.png"),
+	preload("res://assets/Clouds/Clouds 3/1.png"),
+	preload("res://assets/Clouds/Clouds 4/1.png"),
+	preload("res://assets/Clouds/Clouds 5/1.png"),
+	preload("res://assets/Clouds/Clouds 6/1.png")
+]
+# Referência ao Sprite que está dentro do seu Background
+@onready var backgroundSprite = $Background/Background
+
+@onready var backgroundsObjects : Array[Texture2D] = [
+	preload("res://assets/Clouds/Clouds 1/2.png"),
+	preload("res://assets/Clouds/Clouds 2/2.png"),
+	preload("res://assets/Clouds/Clouds 3/2.png"),
+	preload("res://assets/Clouds/Clouds 4/2.png"),
+	preload("res://assets/Clouds/Clouds 5/2.png"),
+	preload("res://assets/Clouds/Clouds 6/2.png")
+]
+@onready var backgroundObjectsSprite = $Background/BgObjects
+
+@onready var backgroundCloudsFar : Array[Texture2D] = [
+	preload("res://assets/Clouds/Clouds 1/3.png"),
+	preload("res://assets/Clouds/Clouds 2/3.png"),
+	preload("res://assets/Clouds/Clouds 3/3.png"),
+	preload("res://assets/Clouds/Clouds 4/3.png"),
+	preload("res://assets/Clouds/Clouds 5/3.png"),
+	preload("res://assets/Clouds/Clouds 6/3.png")
+]
+@onready var backgroundCloudsFarSprite = $BgCloudsFar/CloudsFar
+
+@onready var backgroundCloudsClose : Array[Texture2D] = [
+	preload("res://assets/Clouds/Clouds 1/4.png"),
+	preload("res://assets/Clouds/Clouds 2/4.png"),
+	preload("res://assets/Clouds/Clouds 3/4.png"),
+	preload("res://assets/Clouds/Clouds 4/4.png"),
+	preload("res://assets/Clouds/Clouds 5/4.png"),
+	preload("res://assets/Clouds/Clouds 6/4.png")
+]
+@onready var backgroundCloudsCloseSprite = $BgCloudsClose/CloudsClose
+
 func _ready():
 	# Inicializa o gerador de números aleatórios com uma semente nova
 	randomize()
@@ -42,13 +84,17 @@ func _ready():
 	# Verifica se a instância atual é o servidor
 	if multiplayer.is_server():
 		# O Host registra seu próprio nome no dicionário do servidor
-		NetworkManager.player_names[1] = NetworkManager.local_nickname
+		NetworkManager.playerNames[1] = NetworkManager.localNickname
 		
 		# Cria o player local do próprio host imediatamente
 		_spawn_player(1)
 	else:
 		# Se for um cliente, envia um RPC para o servidor registrando seu nickname
-		rpc_id(1, "_server_register_name", NetworkManager.local_nickname)
+		rpc_id(1, "_server_register_name", NetworkManager.localNickname)
+	
+	# Como essa função roda assim que a cena carrega, 
+	# ela vai checar o que foi salvo no NetworkManager
+	_configurar_background_local()
 
 func _on_peer_connected(_id: int):
 	# O servidor detecta a conexão, mas para clientes, esperamos o RPC de registro de nome.
@@ -61,7 +107,7 @@ func _server_register_name(nick: String):
 	var sender_id = multiplayer.get_remote_sender_id()
 	
 	# Armazena o nickname associado ao ID do remetente no NetworkManager
-	NetworkManager.player_names[sender_id] = nick
+	NetworkManager.playerNames[sender_id] = nick
 	
 	# Agora que o servidor conhece o nick, ele solicita o spawn do player
 	_spawn_player(sender_id)
@@ -85,7 +131,7 @@ func _spawn_player(id: int):
 		var spawnPos = pointsList[index].global_position
 		
 		# Recupera o nick do dicionário (ou usa um fallback se não encontrar)
-		var nick = NetworkManager.player_names.get(id, "Player_" + str(id))
+		var nick = NetworkManager.playerNames.get(id, "Player_" + str(id))
 		
 		# Dispara o spawn oficial através do MultiplayerSpawner
 		playersSpawner.spawn({"id": id, "pos": spawnPos, "nick": nick})
@@ -110,7 +156,7 @@ func _custom_spawn(data: Variant) -> Node:
 func _on_peer_disconnected(id: int):
 	if multiplayer.is_server():
 		# Pega o nome do player antes de apagar do dicionário
-		var nick = NetworkManager.player_names.get(id, "Player_" + str(id))
+		var nick = NetworkManager.playerNames.get(id, "Player_" + str(id))
 		
 		# Avisa no chat que o player saiu
 		var chat = get_tree().get_first_node_in_group("InterfaceChatGroup")
@@ -118,7 +164,7 @@ func _on_peer_disconnected(id: int):
 			chat.rpc("_receive_message", nick, "desconectou-se", Color.CORAL, true)
 		
 		# Limpa os dados
-		NetworkManager.player_names.erase(id)
+		NetworkManager.playerNames.erase(id)
 	
 	if playersContainer.has_node(str(id)):
 		playersContainer.get_node(str(id)).queue_free()
@@ -126,3 +172,15 @@ func _on_peer_disconnected(id: int):
 func _on_host_lost():
 	# Feedback antes de resetar (opcional)
 	NetworkManager._reset_network("Host desligou o servidor")
+
+func _configurar_background_local():
+	var id = NetworkManager.backgroundEscolhido
+	
+	# Verifica se o ID é válido e se a textura existe no array
+	if id >= 0 and id < background.size():
+		backgroundSprite.texture = background[id]
+		backgroundObjectsSprite.texture = backgroundsObjects[id]
+		backgroundCloudsFarSprite.texture = backgroundCloudsFar[id]
+		backgroundCloudsCloseSprite.texture = backgroundCloudsClose[id]
+	else:
+		print("Erro: Índice de background inválido!")

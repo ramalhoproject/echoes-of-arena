@@ -1,4 +1,5 @@
 extends CharacterBody2D
+class_name PlayerMovement
 # Script responsável pelo movimento do player.
 # Executa apenas no peer que possui autoridade sobre este player.
 

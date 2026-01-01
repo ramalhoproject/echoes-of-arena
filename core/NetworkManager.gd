@@ -8,13 +8,17 @@ const port := 42069
 const maxPlayers := 4
 # Número máximo de jogadores permitidos no servidor
 
-var local_nickname : String = ""
+var localNickname : String = ""
 # Armazena o nome do jogador local para ser usado durante o spawn
-var player_names : Dictionary = {} # Mapeia { id: "nome" }
+var playerNames : Dictionary = {} # Mapeia { id: "nome" }
 
-var local_player_color : Color
+var localPlayerColor : Color
 
-var mensagem_pendente: String = ""
+var mensagemPendente: String = ""
+
+var selectedCharacter := "cryomancer" # Padrão
+
+var backgroundEscolhido : int = 0 # Valor padrão (ex: Clima 1)
 
 func _start_server():
 	# Cria um novo peer ENet
@@ -41,10 +45,10 @@ func _reset_network(mensagem: String = ""):
 	multiplayer.multiplayer_peer = null
 	
 	# Limpa a lista de nomes para a próxima partida
-	player_names.clear()
+	playerNames.clear()
 	
 	# Guardamos a mensagem antes de mudar a cena
-	mensagem_pendente = mensagem
+	mensagemPendente = mensagem
 	
 	# Volta para a cena do Lobby (ajuste o caminho se necessário)
 	get_tree().change_scene_to_file("res://maps/Lobby.tscn")

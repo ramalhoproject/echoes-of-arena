@@ -27,7 +27,7 @@ func _ready():
 	
 	# SALVE A COR NO NETWORK MANAGER:
 	# Assim, o chat sempre saberá qual é a cor do jogador local.
-	NetworkManager.local_player_color = playerColor
+	NetworkManager.localPlayerColor = playerColor
 	
 	# Aplica a cor localmente no sprite
 	_apply_color(playerColor)
