@@ -1,48 +1,104 @@
 extends CharacterBody2D
 class_name PlayerMovement
-# Script responsável pelo movimento do player.
-# Executa apenas no peer que possui autoridade sobre este player.
 
-@export var speed := 300 # Velocidade horizontal do player
-@export var jumpForce := 550 # Força aplicada ao pulo
-@export var gravity := 1200 # Valor da gravidade aplicada quando o player está no ar
+## CONSTANTES DE GAMEPLAY
+const JUMP_GRAVITY : float = 1400
+const FALL_GRAVITY : float = 1800
+const COYOTE_TIME : float = 0.15   # Tempo (segundos) para pular após cair da plataforma
+const JUMP_BUFFER_TIME : float = 0.15 # Tempo (segundos) que o comando de pulo fica "salvo"
 
+# VARIÁVEIS EXPORT
+@export var speed := 250 
+@export var jumpForce := 600 
+@export var acceleration : float = 2400 # Aumentei um pouco para ser mais responsivo
+@export var friction : float = 1800
 @export var playerInput: Node2D
-# Referência o filho PlayerInput
+@export var headShiftAmount : float = 10.0
+@export var headShiftSpeed : float = 30.0
 
-var spawnPosition: Vector2
+# VARIÁVEIS DE ESTADO INTERNO
+var coyoteTimer : float = 0.0
+var jumpBufferTimer : float = 0.0
+var jumpCutoffValue : float = 0.3
 
-func _enter_tree():
-	# O nome do node é o peer_id (definido pelo servidor no spawn)
-	var player_id := str(name).to_int()
-	
-	# Define a autoridade DO PLAYER
-	set_multiplayer_authority(player_id)
-	
-	# Define a autoridade DO MULTIPLAYER SYNCHRONIZER
-	$MultiplayerSynchronizer.set_multiplayer_authority(player_id)
-
-func _ready():
-	# Se este player NÃO for controlado localmente,
-	# desativa processamento físico e de input
-	if not is_multiplayer_authority():
-		set_physics_process(false)
-		set_process_unhandled_input(false)
+@onready var rayLeft: RayCast2D = $HeadCollision/RayCastLeft
+@onready var rayRight: RayCast2D = $HeadCollision/RayCastRight
 
 func _physics_process(delta):
-	# Aplica gravidade quando o player não está no chão
-	if not is_on_floor():
-		velocity.y += gravity * delta
+	if not is_multiplayer_authority(): return
+
+	# 1. ATUALIZAR TIMERS
+	coyoteTimer -= delta
+	jumpBufferTimer -= delta
+
+	if is_on_floor():
+		coyoteTimer = COYOTE_TIME # Reset do coyote ao tocar o chão
+
+	if playerInput.jumpIntent:
+		jumpBufferTimer = JUMP_BUFFER_TIME # Salva a intenção de pular
+		playerInput.jumpIntent = false # Consome o input bruto
+
+	# 2. PROCESSAR MOVIMENTO
+	_handle_movement(delta)
+	_handle_jump(delta)
+	_apply_gravity(delta)
+	_handle_corner_correction()
 	
-	# Captura input horizontal e verifica de acordo com a tecla shift
-	if playerInput.shiftPressed:
-		velocity.x = playerInput.movementDirection * speed / 3 #Se pressionar shift diminui a velocidade
-	else:
-		velocity.x = playerInput.movementDirection * speed
-	
-	# Executa pulo se estiver no chão
-	if playerInput.jumpPressed and is_on_floor():
-		velocity.y = -jumpForce
-	
-	# Move o player respeitando colisões
 	move_and_slide()
+
+func _handle_movement(delta: float) -> void:
+	var targetSpeed = speed
+	if playerInput.shiftPressed: targetSpeed /= 3
+	
+	var targetVelocity = playerInput.movementDirection * targetSpeed
+	
+	if playerInput.movementDirection != 0:
+		velocity.x = move_toward(velocity.x, targetVelocity, acceleration * delta)
+	else:
+		velocity.x = move_toward(velocity.x, 0.0, friction * delta)
+
+func _handle_jump(_delta: float) -> void:
+	# 1. LOGICA DE INICIO DO PULO (Buffer + Coyote)
+	if jumpBufferTimer > 0 and coyoteTimer > 0:
+		velocity.y = -jumpForce
+		jumpBufferTimer = 0
+		coyoteTimer = 0
+		# Se o jogador já soltou o botão antes mesmo de pular (clique ultra rápido), 
+		# aplicamos o corte imediatamente após o impulso inicial
+		if playerInput.jumpReleased:
+			velocity.y *= jumpCutoffValue
+			playerInput.jumpReleased = false
+
+	# 2. LOGICA DE CORTE DO PULO (Variable Jump Height)
+	if playerInput.jumpReleased:
+		if velocity.y < 0.0:
+			# Só corta se estiver subindo. 
+			# Se estiver caindo, apenas limpamos a intenção.
+			velocity.y *= jumpCutoffValue
+		
+		# IMPORTANTE: Consumimos o input para ele não ficar cortando a velocidade 
+		# em frames seguintes de queda.
+		playerInput.jumpReleased = false
+
+func _apply_gravity(delta: float) -> void:
+	if is_on_floor(): return
+	
+	# Gravidade variável: cai mais rápido do que sobe (melhora o feeling)
+	var gravity := JUMP_GRAVITY if velocity.y < 0.0 else FALL_GRAVITY
+	velocity.y += gravity * delta
+
+func _handle_corner_correction():
+	if velocity.y >= 0:
+		return
+	
+	var leftHit = rayLeft.is_colliding()
+	var rightHit = rayRight.is_colliding()
+	
+	# Se apenas o lado direito bateu, empurramos para a esquerda
+	if rightHit and not leftHit:
+		global_position.x -= headShiftAmount
+		velocity.x = -headShiftSpeed
+	# Se apenas o lado esquerdo bateu, empurramos para a direita
+	elif leftHit and not rightHit:
+		global_position.x += headShiftAmount
+		velocity.x = headShiftSpeed

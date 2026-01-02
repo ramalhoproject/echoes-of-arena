@@ -235,9 +235,9 @@ icon = ExtResource("8_7ahvd")
 [node name="SelecaoCor" type="Control" parent="."]
 anchors_preset = 0
 offset_left = 782.0
-offset_top = 47.0
+offset_top = 35.0
 offset_right = 822.0
-offset_bottom = 87.0
+offset_bottom = 75.0
 
 [node name="Label" type="Label" parent="SelecaoCor"]
 layout_mode = 0

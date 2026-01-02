@@ -87,10 +87,10 @@ func _ready():
 		NetworkManager.playerNames[1] = NetworkManager.localNickname
 		
 		# Cria o player local do próprio host imediatamente
-		_spawn_player(1, NetworkManager.localPlayerColor)
+		_spawn_player(1, NetworkManager.localPlayerColor, NetworkManager.selectedCharacter)
 	else:
 		# Se for um cliente, envia um RPC para o servidor registrando seu nickname
-		rpc_id(1, "_server_register_name", NetworkManager.localNickname, NetworkManager.localPlayerColor)
+		rpc_id(1, "_server_register_name", NetworkManager.localNickname, NetworkManager.localPlayerColor, NetworkManager.selectedCharacter)
 	
 	# Como essa função roda assim que a cena carrega, 
 	# ela vai checar o que foi salvo no NetworkManager
@@ -102,19 +102,19 @@ func _on_peer_connected(_id: int):
 	pass
 
 @rpc("any_peer", "reliable")
-func _server_register_name(nick: String, color: Color):
+func _server_register_name(nick: String, color: Color, character: String):
 	var senderId = multiplayer.get_remote_sender_id()
 	NetworkManager.playerNames[senderId] = nick
 	# Você pode criar um dicionário de cores no NetworkManager se quiser guardar
 	
-	_spawn_player(senderId, color) # Passa a cor recebida
+	_spawn_player(senderId, color, character) # Passa a cor recebida
 	
 	# Notifica o chat com a cor correta do player que entrou
 	var chat = get_tree().get_first_node_in_group("InterfaceChatGroup")
 	if chat:
 		chat.rpc("_receive_message", nick, "conectou-se", color, true)
 
-func _spawn_player(id: int, color: Color = Color.WHITE):
+func _spawn_player(id: int, color: Color, character: String):
 	# Função auxiliar do servidor para calcular posição e disparar o spawn
 	if multiplayer.is_server():
 			var index = playersContainer.get_child_count() % pointsList.size()
@@ -122,21 +122,21 @@ func _spawn_player(id: int, color: Color = Color.WHITE):
 			var nick = NetworkManager.playerNames.get(id, "Player_" + str(id))
 			
 			# Agora passamos a cor correta do player, não a do Host
-			playersSpawner.spawn({"id": id, "pos": spawnPos, "nick": nick, "color": color})
+			playersSpawner.spawn({"id": id, "pos": spawnPos, "nick": nick, "color": color, "char": character})
 
 func _custom_spawn(data: Variant) -> Node:
 	# Esta função é executada em TODOS os peers (host e clientes) via MultiplayerSpawner
 	var player = playerScene.instantiate()
-	
 	# Define o nome do nó como o ID para manter a sincronia entre os peers
 	player.name = str(data.id)
-	
+	# Define a autoridade ANTES de adicionar à árvore para evitar conflitos
+	player.set_multiplayer_authority(data.id)
 	# Define a posição recebida através do dicionário de dados
 	player.global_position = data.pos
-	
-	# Acessa o nó de identidade visual e aplica os dados de Nick e Cor
-	# Certifique-se que o nó "PlayerVisual" existe dentro da cena Player.tscn
+	# Seta Nome e Cor
 	player.get_node("PlayerVisual").setup_identity(data)
+	# Supondo que o nó se chama "AnimatedSprite2D" ou "PlayAnimations"
+	player.get_node("AnimatedSprite2D").setup_visual(data.char)
 	
 	# Retorna o player para que o Godot o adicione automaticamente ao playersContainer
 	return player

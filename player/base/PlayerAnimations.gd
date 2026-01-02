@@ -45,6 +45,9 @@ func _process(_delta: float) -> void:
 		else:
 			play("walk")
 
+func setup_visual(personagem: String):
+	_aplicar_sprite_frames(personagem)
+
 # Função para trocar o recurso visual
 func _aplicar_sprite_frames(personagem: String):
 	if personagem == "cryomancer":

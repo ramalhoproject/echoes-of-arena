@@ -8,8 +8,9 @@
 [ext_resource type="Script" uid="uid://cyq5b6uob4l76" path="res://player/base/PlayerInput.gd" id="5_x8kxw"]
 [ext_resource type="SpriteFrames" uid="uid://cehlptl6x11o5" path="res://characters/CryomancerAnimation.tres" id="6_2rkwa"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_4kuee"]
-size = Vector2(32, 32)
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_2rkwa"]
+radius = 11.0
+height = 64.0
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_gfjak"]
 properties/0/path = NodePath("PlayerName:text")
@@ -33,6 +34,8 @@ properties/5/replication_mode = 1
 
 [node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("playerInput")]
 collision_layer = 0
+floor_snap_length = 12.0
+safe_margin = 0.1
 script = ExtResource("1_gfjak")
 playerInput = NodePath("PlayerInput")
 
@@ -50,7 +53,8 @@ script = ExtResource("5_x8kxw")
 script = ExtResource("3_wnvi2")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_4kuee")
+position = Vector2(0, -2)
+shape = SubResource("CapsuleShape2D_2rkwa")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_gfjak")
@@ -63,9 +67,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -54.0
-offset_top = -74.0
+offset_top = -60.0
 offset_right = 50.0
-offset_bottom = -51.0
+offset_bottom = -37.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
@@ -76,8 +80,18 @@ vertical_alignment = 2
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
-position = Vector2(0, -48)
+position = Vector2(5, -34)
 sprite_frames = ExtResource("6_2rkwa")
 animation = &"idle"
 autoplay = "idle"
 script = ExtResource("4_2rkwa")
+
+[node name="HeadCollision" type="Node2D" parent="."]
+
+[node name="RayCastLeft" type="RayCast2D" parent="HeadCollision"]
+position = Vector2(-8, -28)
+target_position = Vector2(0, -16)
+
+[node name="RayCastRight" type="RayCast2D" parent="HeadCollision"]
+position = Vector2(8, -28)
+target_position = Vector2(0, -16)
