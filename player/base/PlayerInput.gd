@@ -10,6 +10,11 @@ var jumpIntent : bool = false       # Estado do pulo (true se foi pressionado o 
 var jumpReleased : bool = false     # Estado do pulo (true se foi soltado o botão de pular)
 var shiftPressed : bool = false     # Estado do shift (true se estiver pressionando o botão de shift)
 
+#=====================================================================
+# VARIÁVEIS DE COMBATE
+#=====================================================================
+var attackPrimaryIntent : bool = false # ataque básico 
+var skill1Intent : bool = false # skill 1
 # ==============================================================================
 # LOOP DE PROCESSAMENTO
 # ==============================================================================

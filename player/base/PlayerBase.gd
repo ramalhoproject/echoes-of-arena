@@ -24,6 +24,10 @@ var is_dead := false
 @export var synchronizer: MultiplayerSynchronizer
 
 # =========================
+# SINAIS
+# =========================
+signal health_changed(new_health: int, max_health: int)
+# =========================
 # DADOS DO PERSONAGEM
 # =========================
 var character_data
@@ -39,7 +43,9 @@ func _ready():
 		set_physics_process(false)
 	
 	health = max_health
-	
+	# Emitimos o sinal logo no início para garantir que a barra comece cheia
+	# O call_deferred garante que a UI já esteja pronta para ouvir
+	call_deferred("emit_signal", "health_changed", health, max_health)
 	if visual_component:
 		visual_component.setup(self)
 
@@ -77,7 +83,10 @@ func take_damage(amount: int):
 		return
 	
 	health -= amount
-	
+	# Garante que não fique negativo para a barra não bugar
+	if health < 0: health = 0 
+	# Avisa a UI que a vida mudou
+	health_changed.emit(health, max_health)
 	if visual_component:
 		visual_component.play_hit()
 	
