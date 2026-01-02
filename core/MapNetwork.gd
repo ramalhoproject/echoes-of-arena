@@ -19,43 +19,43 @@ var pointsList = []
 
 # Arraste suas 6 texturas para este Array no Inspetor do Godot
 @onready var background : Array[Texture2D] = [
-	preload("res://assets/Clouds/Clouds 1/1.png"),
-	preload("res://assets/Clouds/Clouds 2/1.png"),
-	preload("res://assets/Clouds/Clouds 3/1.png"),
-	preload("res://assets/Clouds/Clouds 4/1.png"),
-	preload("res://assets/Clouds/Clouds 5/1.png"),
-	preload("res://assets/Clouds/Clouds 6/1.png")
+	preload("res://assets/clouds/clouds 1/1.png"),
+	preload("res://assets/clouds/clouds 2/1.png"),
+	preload("res://assets/clouds/clouds 3/1.png"),
+	preload("res://assets/clouds/clouds 4/1.png"),
+	preload("res://assets/clouds/clouds 5/1.png"),
+	preload("res://assets/clouds/clouds 6/1.png")
 ]
 # Referência ao Sprite que está dentro do seu Background
 @onready var backgroundSprite = $Background/Background
 
 @onready var backgroundsObjects : Array[Texture2D] = [
-	preload("res://assets/Clouds/Clouds 1/2.png"),
-	preload("res://assets/Clouds/Clouds 2/2.png"),
-	preload("res://assets/Clouds/Clouds 3/2.png"),
-	preload("res://assets/Clouds/Clouds 4/2.png"),
-	preload("res://assets/Clouds/Clouds 5/2.png"),
-	preload("res://assets/Clouds/Clouds 6/2.png")
+	preload("res://assets/clouds/clouds 1/2.png"),
+	preload("res://assets/clouds/clouds 2/2.png"),
+	preload("res://assets/clouds/clouds 3/2.png"),
+	preload("res://assets/clouds/clouds 4/2.png"),
+	preload("res://assets/clouds/clouds 5/2.png"),
+	preload("res://assets/clouds/clouds 6/2.png")
 ]
 @onready var backgroundObjectsSprite = $Background/BgObjects
 
 @onready var backgroundCloudsFar : Array[Texture2D] = [
-	preload("res://assets/Clouds/Clouds 1/3.png"),
-	preload("res://assets/Clouds/Clouds 2/3.png"),
-	preload("res://assets/Clouds/Clouds 3/3.png"),
-	preload("res://assets/Clouds/Clouds 4/3.png"),
-	preload("res://assets/Clouds/Clouds 5/3.png"),
-	preload("res://assets/Clouds/Clouds 6/3.png")
+	preload("res://assets/clouds/clouds 1/3.png"),
+	preload("res://assets/clouds/clouds 2/3.png"),
+	preload("res://assets/clouds/clouds 3/3.png"),
+	preload("res://assets/clouds/clouds 4/3.png"),
+	preload("res://assets/clouds/clouds 5/3.png"),
+	preload("res://assets/clouds/clouds 6/3.png")
 ]
 @onready var backgroundCloudsFarSprite = $BgCloudsFar/CloudsFar
 
 @onready var backgroundCloudsClose : Array[Texture2D] = [
-	preload("res://assets/Clouds/Clouds 1/4.png"),
-	preload("res://assets/Clouds/Clouds 2/4.png"),
-	preload("res://assets/Clouds/Clouds 3/4.png"),
-	preload("res://assets/Clouds/Clouds 4/4.png"),
-	preload("res://assets/Clouds/Clouds 5/4.png"),
-	preload("res://assets/Clouds/Clouds 6/4.png")
+	preload("res://assets/clouds/clouds 1/4.png"),
+	preload("res://assets/clouds/clouds 2/4.png"),
+	preload("res://assets/clouds/clouds 3/4.png"),
+	preload("res://assets/clouds/clouds 4/4.png"),
+	preload("res://assets/clouds/clouds 5/4.png"),
+	preload("res://assets/clouds/clouds 6/4.png")
 ]
 @onready var backgroundCloudsCloseSprite = $BgCloudsClose/CloudsClose
 
@@ -87,10 +87,10 @@ func _ready():
 		NetworkManager.playerNames[1] = NetworkManager.localNickname
 		
 		# Cria o player local do próprio host imediatamente
-		_spawn_player(1)
+		_spawn_player(1, NetworkManager.localPlayerColor)
 	else:
 		# Se for um cliente, envia um RPC para o servidor registrando seu nickname
-		rpc_id(1, "_server_register_name", NetworkManager.localNickname)
+		rpc_id(1, "_server_register_name", NetworkManager.localNickname, NetworkManager.localPlayerColor)
 	
 	# Como essa função roda assim que a cena carrega, 
 	# ela vai checar o que foi salvo no NetworkManager
@@ -102,39 +102,27 @@ func _on_peer_connected(_id: int):
 	pass
 
 @rpc("any_peer", "reliable")
-func _server_register_name(nick: String):
-	# Função executada apenas no servidor para registrar o nome enviado pelo peer
-	var sender_id = multiplayer.get_remote_sender_id()
+func _server_register_name(nick: String, color: Color):
+	var senderId = multiplayer.get_remote_sender_id()
+	NetworkManager.playerNames[senderId] = nick
+	# Você pode criar um dicionário de cores no NetworkManager se quiser guardar
 	
-	# Armazena o nickname associado ao ID do remetente no NetworkManager
-	NetworkManager.playerNames[sender_id] = nick
+	_spawn_player(senderId, color) # Passa a cor recebida
 	
-	# Agora que o servidor conhece o nick, ele solicita o spawn do player
-	_spawn_player(sender_id)
-	
-	# --- MENSAGEM DE CONEXÃO NO CHAT ---
-	# O servidor avisa a todos que esse player entrou.
-	# Vamos definir uma cor cinza ou branca para mensagens de sistema,
-	# ou usar a cor que o player acabou de ganhar.
-	var mensagem = "conectou-se"
-	
-	# Chamamos o RPC do chat (que deve estar no mesmo grupo ou acessível)
+	# Notifica o chat com a cor correta do player que entrou
 	var chat = get_tree().get_first_node_in_group("InterfaceChatGroup")
 	if chat:
-		chat.rpc("_receive_message", nick, mensagem, Color.GREEN, true)
+		chat.rpc("_receive_message", nick, "conectou-se", color, true)
 
-func _spawn_player(id: int):
+func _spawn_player(id: int, color: Color = Color.WHITE):
 	# Função auxiliar do servidor para calcular posição e disparar o spawn
 	if multiplayer.is_server():
-		# Seleciona o ponto de spawn baseado na ordem de entrada
-		var index = playersContainer.get_child_count() % pointsList.size()
-		var spawnPos = pointsList[index].global_position
-		
-		# Recupera o nick do dicionário (ou usa um fallback se não encontrar)
-		var nick = NetworkManager.playerNames.get(id, "Player_" + str(id))
-		
-		# Dispara o spawn oficial através do MultiplayerSpawner
-		playersSpawner.spawn({"id": id, "pos": spawnPos, "nick": nick})
+			var index = playersContainer.get_child_count() % pointsList.size()
+			var spawnPos = pointsList[index].global_position
+			var nick = NetworkManager.playerNames.get(id, "Player_" + str(id))
+			
+			# Agora passamos a cor correta do player, não a do Host
+			playersSpawner.spawn({"id": id, "pos": spawnPos, "nick": nick, "color": color})
 
 func _custom_spawn(data: Variant) -> Node:
 	# Esta função é executada em TODOS os peers (host e clientes) via MultiplayerSpawner

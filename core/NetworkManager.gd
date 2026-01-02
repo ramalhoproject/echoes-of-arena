@@ -12,7 +12,7 @@ var localNickname : String = ""
 # Armazena o nome do jogador local para ser usado durante o spawn
 var playerNames : Dictionary = {} # Mapeia { id: "nome" }
 
-var localPlayerColor : Color
+var localPlayerColor : Color = Color.WHITE
 
 var mensagemPendente: String = ""
 

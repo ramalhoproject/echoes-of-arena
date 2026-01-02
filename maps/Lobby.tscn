@@ -2,15 +2,15 @@
 
 [ext_resource type="Script" uid="uid://uv8st0ke02i7" path="res://maps/Lobby.gd" id="1_jor2k"]
 [ext_resource type="PackedScene" uid="uid://bpku7lobtyenm" path="res://maps/Arena01.tscn" id="2_71o6c"]
-[ext_resource type="Texture2D" uid="uid://djij0htahhlgt" path="res://assets/Clouds/Clouds 1/1.png" id="3_arljt"]
-[ext_resource type="Texture2D" uid="uid://bactspp8hw0nv" path="res://assets/Cryomancer Icon.png" id="3_ddprd"]
-[ext_resource type="Texture2D" uid="uid://ckqh8eywwa1wt" path="res://assets/Clouds/Clouds 2/1.png" id="4_l3jjx"]
-[ext_resource type="Texture2D" uid="uid://jwm6tl0gblw8" path="res://assets/Assassin Icon.png" id="4_smn20"]
+[ext_resource type="Texture2D" uid="uid://djij0htahhlgt" path="res://assets/clouds/clouds 1/1.png" id="3_arljt"]
+[ext_resource type="Texture2D" uid="uid://bactspp8hw0nv" path="res://assets/characters/icons/Cryomancer Icon.png" id="3_ddprd"]
+[ext_resource type="Texture2D" uid="uid://ckqh8eywwa1wt" path="res://assets/clouds/clouds 2/1.png" id="4_l3jjx"]
+[ext_resource type="Texture2D" uid="uid://jwm6tl0gblw8" path="res://assets/characters/icons/Assassin Icon.png" id="4_smn20"]
 [ext_resource type="ButtonGroup" uid="uid://rtpeoval7dtt" path="res://maps/WeatherButtonGroup.tres" id="5_l3jjx"]
-[ext_resource type="Texture2D" uid="uid://d1wlqorqxmnc" path="res://assets/Clouds/Clouds 3/1.png" id="5_niwgo"]
-[ext_resource type="Texture2D" uid="uid://b3h04jut786lp" path="res://assets/Clouds/Clouds 4/1.png" id="6_w1a84"]
-[ext_resource type="Texture2D" uid="uid://clpd52dyhpjqd" path="res://assets/Clouds/Clouds 5/1.png" id="7_m3oms"]
-[ext_resource type="Texture2D" uid="uid://d3lqdudhv87s4" path="res://assets/Clouds/Clouds 6/1.png" id="8_7ahvd"]
+[ext_resource type="Texture2D" uid="uid://d1wlqorqxmnc" path="res://assets/clouds/clouds 3/1.png" id="5_niwgo"]
+[ext_resource type="Texture2D" uid="uid://b3h04jut786lp" path="res://assets/clouds/clouds 4/1.png" id="6_w1a84"]
+[ext_resource type="Texture2D" uid="uid://clpd52dyhpjqd" path="res://assets/clouds/clouds 5/1.png" id="7_m3oms"]
+[ext_resource type="Texture2D" uid="uid://d3lqdudhv87s4" path="res://assets/clouds/clouds 6/1.png" id="8_7ahvd"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_niwgo"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -36,14 +36,15 @@ expand_margin_top = 10.0
 expand_margin_right = 10.0
 expand_margin_bottom = 10.0
 
-[node name="Lobby" type="Control" node_paths=PackedStringArray("ipInput", "nickName", "connectionStatus")]
+[node name="Lobby" type="Control" node_paths=PackedStringArray("nickName", "ipInput", "connectionStatus", "colorInput")]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_jor2k")
-ipInput = NodePath("MenuInicial/IPContainer/IP")
 nickName = NodePath("MenuInicial/NicknameContainer/Nickname")
-arena01 = ExtResource("2_71o6c")
+ipInput = NodePath("MenuInicial/IPContainer/IP")
+map = ExtResource("2_71o6c")
 connectionStatus = NodePath("MenuInicial/ConnectionStatus")
+colorInput = NodePath("SelecaoCor/PlayerColor")
 
 [node name="GameName" type="Label" parent="."]
 layout_mode = 0
@@ -231,8 +232,31 @@ toggle_mode = true
 button_group = ExtResource("5_l3jjx")
 icon = ExtResource("8_7ahvd")
 
+[node name="SelecaoCor" type="Control" parent="."]
+anchors_preset = 0
+offset_left = 782.0
+offset_top = 47.0
+offset_right = 822.0
+offset_bottom = 87.0
+
+[node name="Label" type="Label" parent="SelecaoCor"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_font_sizes/font_size = 24
+text = "Selecione sua cor:"
+
+[node name="PlayerColor" type="ColorPickerButton" parent="SelecaoCor"]
+layout_mode = 0
+offset_left = 220.0
+offset_right = 260.0
+offset_bottom = 34.0
+color = Color(1, 1, 1, 1)
+
+[connection signal="gui_input" from="." to="." method="_on_gui_input"]
 [connection signal="pressed" from="MenuInicial/HostContainer/Host" to="." method="testando"]
 [connection signal="pressed" from="MenuInicial/HostContainer/Host" to="." method="_on_host_pressed"]
 [connection signal="pressed" from="MenuInicial/ClientContainer/Join" to="." method="_on_join_pressed"]
 [connection signal="pressed" from="SelecaoPersonagem/ItemList/CryomancerButton" to="." method="_on_cryomancer_button_pressed"]
 [connection signal="pressed" from="SelecaoPersonagem/ItemList/AssassinButton" to="." method="_on_assassin_button_pressed"]
+[connection signal="color_changed" from="SelecaoCor/PlayerColor" to="." method="_on_color_picker_button_color_changed"]

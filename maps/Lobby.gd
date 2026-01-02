@@ -1,10 +1,11 @@
 extends Control
 # Cena de interface do lobby.
 
-@export var ipInput: LineEdit
 @export var nickName: LineEdit
-@export var arena01: PackedScene
+@export var ipInput: LineEdit
+@export var map: PackedScene
 @export var connectionStatus: Label
+@export var colorInput: ColorPickerButton
 
 func _ready():
 	# Conecta os sinais do multiplayer para reagir ao sucesso ou falha
@@ -20,8 +21,11 @@ func _ready():
 		# Limpa a mensagem para não aparecer de novo se o player resetar o lobby manualmente
 		NetworkManager.mensagemPendente = ""
 	
-	# Seta o nickname já preenchido em no último lobby
+	# Seta o nickname já preenchido no último lobby
 	nickName.text = NetworkManager.localNickname
+	
+	# Seta a cor já preenchida no último lobby
+	colorInput.color = NetworkManager.localPlayerColor
 	
 	# Supondo que seus botões estão todos dentro de um nó chamado "WeatherContainer"
 	var botoes = $SelecaoClima/WheaterButtons.get_children()
@@ -42,7 +46,7 @@ func _on_host_pressed():
 	NetworkManager._start_server()
 	
 	# Como host é o servidor, ele pode mudar de cena na hora
-	get_tree().change_scene_to_packed(arena01)
+	get_tree().change_scene_to_packed(map)
 
 func _on_join_pressed():
 	if nickName.text.is_empty():
@@ -60,7 +64,7 @@ func _on_join_pressed():
 	nickName.editable = true
 
 func _on_connection_success():
-	get_tree().change_scene_to_packed(arena01)
+	get_tree().change_scene_to_packed(map)
 
 func _on_connection_fail():
 	# Se não encontrar o host, reativa os botões e avisa
@@ -75,14 +79,16 @@ func _on_server_disconnected():
 	NetworkManager._reset_network("O Servidor caiu ou foi fechado")
 
 func _on_cryomancer_button_pressed() -> void:
-	NetworkManager.selected_character = "cryomancer"
+	NetworkManager.selectedCharacter = "cryomancer"
 	_notificar_player("Cryomancer selecionado", Color.AQUA)
 
 func _on_assassin_button_pressed() -> void:
-	NetworkManager.selected_character = "assassin"
+	NetworkManager.selectedCharacter = "assassin"
 	_notificar_player("Assassin selecionado", Color.BLACK)
-
 
 func _on_clima_selecionado(clima_id: int):
 	NetworkManager.backgroundEscolhido = clima_id
 	_notificar_player(str("Fundo ", clima_id + 1, " selecionado"), Color.CORNSILK)
+
+func _on_color_picker_button_color_changed(color: Color) -> void:
+	NetworkManager.localPlayerColor = color

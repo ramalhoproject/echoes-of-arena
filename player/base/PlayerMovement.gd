@@ -34,8 +34,11 @@ func _physics_process(delta):
 	if not is_on_floor():
 		velocity.y += gravity * delta
 	
-	# Captura input horizontal
-	velocity.x = playerInput.movementDirection * speed
+	# Captura input horizontal e verifica de acordo com a tecla shift
+	if playerInput.shiftPressed:
+		velocity.x = playerInput.movementDirection * speed / 3 #Se pressionar shift diminui a velocidade
+	else:
+		velocity.x = playerInput.movementDirection * speed
 	
 	# Executa pulo se estiver no chão
 	if playerInput.jumpPressed and is_on_floor():

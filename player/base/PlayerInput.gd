@@ -3,6 +3,7 @@ extends Node # Define que este objeto é um nó simples na árvore de cena
 # Variáveis globais para armazenar o estado do input que será lido pelo script de movimento (Parent)
 var movementDirection := 0.0  # Direção horizontal (-1.0 esquerda, 1.0 direita, 0 parado)
 var jumpPressed := false      # Estado do pulo (true se estiver pressionando o botão de pular)
+var shiftPressed := false      # Estado do shift (true se estiver pressionando o botão de shift)
 
 # Função chamada a cada frame do jogo
 func _process(_delta):
@@ -32,6 +33,9 @@ func _process(_delta):
 	
 	# Verifica se a tecla configurada para "pular" (seta para cima/W) está sendo pressionada
 	jumpPressed = Input.is_action_pressed("ui_up")
+	
+	# Verifica se a tecla configurada para "shift" está sendo pressionada
+	shiftPressed = Input.is_action_pressed("shift")
 
 # Função para capturar inputs que a interface (UI) não consumiu
 func _unhandled_input(event: InputEvent):
