@@ -2,15 +2,15 @@
 
 [ext_resource type="Script" uid="uid://uv8st0ke02i7" path="res://maps/Lobby.gd" id="1_jor2k"]
 [ext_resource type="PackedScene" uid="uid://bpku7lobtyenm" path="res://maps/Arena01.tscn" id="2_71o6c"]
-[ext_resource type="Texture2D" uid="uid://djij0htahhlgt" path="res://assets/clouds/clouds 1/1.png" id="3_arljt"]
+[ext_resource type="Texture2D" uid="uid://djij0htahhlgt" path="res://assets/Clouds/Clouds 1/1.png" id="3_arljt"]
 [ext_resource type="Texture2D" uid="uid://bactspp8hw0nv" path="res://assets/characters/icons/Cryomancer Icon.png" id="3_ddprd"]
-[ext_resource type="Texture2D" uid="uid://ckqh8eywwa1wt" path="res://assets/clouds/clouds 2/1.png" id="4_l3jjx"]
+[ext_resource type="Texture2D" uid="uid://ckqh8eywwa1wt" path="res://assets/Clouds/Clouds 2/1.png" id="4_l3jjx"]
 [ext_resource type="Texture2D" uid="uid://jwm6tl0gblw8" path="res://assets/characters/icons/Assassin Icon.png" id="4_smn20"]
 [ext_resource type="ButtonGroup" uid="uid://rtpeoval7dtt" path="res://maps/WeatherButtonGroup.tres" id="5_l3jjx"]
-[ext_resource type="Texture2D" uid="uid://d1wlqorqxmnc" path="res://assets/clouds/clouds 3/1.png" id="5_niwgo"]
-[ext_resource type="Texture2D" uid="uid://b3h04jut786lp" path="res://assets/clouds/clouds 4/1.png" id="6_w1a84"]
-[ext_resource type="Texture2D" uid="uid://clpd52dyhpjqd" path="res://assets/clouds/clouds 5/1.png" id="7_m3oms"]
-[ext_resource type="Texture2D" uid="uid://d3lqdudhv87s4" path="res://assets/clouds/clouds 6/1.png" id="8_7ahvd"]
+[ext_resource type="Texture2D" uid="uid://d1wlqorqxmnc" path="res://assets/Clouds/Clouds 3/1.png" id="5_niwgo"]
+[ext_resource type="Texture2D" uid="uid://b3h04jut786lp" path="res://assets/Clouds/Clouds 4/1.png" id="6_w1a84"]
+[ext_resource type="Texture2D" uid="uid://clpd52dyhpjqd" path="res://assets/Clouds/Clouds 5/1.png" id="7_m3oms"]
+[ext_resource type="Texture2D" uid="uid://d3lqdudhv87s4" path="res://assets/Clouds/Clouds 6/1.png" id="8_7ahvd"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_niwgo"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
