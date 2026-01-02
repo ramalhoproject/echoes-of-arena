@@ -1,13 +1,19 @@
 [gd_scene load_steps=13 format=3 uid="uid://c4p235atv2hkb"]
 
 [ext_resource type="Script" uid="uid://cwmhcwd72ibkt" path="res://player/base/PlayerMovement.gd" id="1_gfjak"]
-[ext_resource type="Texture2D" uid="uid://brfnno6amr6wl" path="res://assets/white_square.png" id="2_gfjak"]
 [ext_resource type="Script" uid="uid://bbcdp1e8iqwmr" path="res://player/base/PlayerVisual.gd" id="3_83hs8"]
 [ext_resource type="Script" uid="uid://h6p1av6jpyjb" path="res://player/base/CameraPlayer.gd" id="3_wnvi2"]
 [ext_resource type="Script" uid="uid://dfumcfvmx6e2q" path="res://player/base/PlayerAnimations.gd" id="4_2rkwa"]
+[ext_resource type="Script" uid="uid://dht3k7kx0wb75" path="res://player/base/PlayerBase.gd" id="4_m3w8c"]
 [ext_resource type="Script" uid="uid://cyq5b6uob4l76" path="res://player/base/PlayerInput.gd" id="5_x8kxw"]
 [ext_resource type="SpriteFrames" uid="uid://cehlptl6x11o5" path="res://characters/CryomancerAnimation.tres" id="6_2rkwa"]
 [ext_resource type="Script" uid="uid://bq3gxw2uffgsa" path="res://player/base/HealthBarComponent.gd" id="8_m3w8c"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2rkwa"]
+bg_color = Color(0.31318092, 5.8358535e-07, 0.014222468, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m3w8c"]
+bg_color = Color(0.627451, 0.019607844, 0.0627451, 1)
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_2rkwa"]
 radius = 11.0
@@ -33,12 +39,6 @@ properties/5/path = NodePath("AnimatedSprite2D:animation")
 properties/5/spawn = true
 properties/5/replication_mode = 1
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2rkwa"]
-bg_color = Color(0.31318092, 5.8358535e-07, 0.014222468, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m3w8c"]
-bg_color = Color(0.627451, 0.019607844, 0.0627451, 1)
-
 [node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("playerInput")]
 collision_layer = 0
 floor_snap_length = 12.0
@@ -47,11 +47,22 @@ script = ExtResource("1_gfjak")
 playerInput = NodePath("PlayerInput")
 
 [node name="PlayerVisual" type="Sprite2D" parent="." node_paths=PackedStringArray("sprite", "playerNameLabel")]
-visible = false
-texture = ExtResource("2_gfjak")
 script = ExtResource("3_83hs8")
 sprite = NodePath(".")
 playerNameLabel = NodePath("../PlayerName")
+
+[node name="HealthBar" type="ProgressBar" parent="PlayerVisual" node_paths=PackedStringArray("player")]
+offset_left = -78.0
+offset_top = -94.0
+offset_right = 77.0
+offset_bottom = -67.0
+theme_override_styles/background = SubResource("StyleBoxFlat_2rkwa")
+theme_override_styles/fill = SubResource("StyleBoxFlat_m3w8c")
+script = ExtResource("8_m3w8c")
+player = NodePath("../../PlayerBase")
+
+[node name="PlayerBase" type="Node2D" parent="."]
+script = ExtResource("4_m3w8c")
 
 [node name="PlayerInput" type="Node2D" parent="."]
 script = ExtResource("5_x8kxw")
@@ -102,12 +113,3 @@ target_position = Vector2(0, -16)
 [node name="RayCastRight" type="RayCast2D" parent="HeadCollision"]
 position = Vector2(8, -28)
 target_position = Vector2(0, -16)
-
-[node name="HealthBar" type="ProgressBar" parent="."]
-offset_left = -78.0
-offset_top = -94.0
-offset_right = 77.0
-offset_bottom = -67.0
-theme_override_styles/background = SubResource("StyleBoxFlat_2rkwa")
-theme_override_styles/fill = SubResource("StyleBoxFlat_m3w8c")
-script = ExtResource("8_m3w8c")
