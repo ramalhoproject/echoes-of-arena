@@ -42,9 +42,9 @@ anchors_preset = 0
 script = ExtResource("1_jor2k")
 nickName = NodePath("MenuInicial/NicknameContainer/Nickname")
 ipInput = NodePath("MenuInicial/IPContainer/IP")
-map = ExtResource("2_71o6c")
 connectionStatus = NodePath("MenuInicial/ConnectionStatus")
 colorInput = NodePath("SelecaoCor/PlayerColor")
+map = ExtResource("2_71o6c")
 
 [node name="GameName" type="Label" parent="."]
 layout_mode = 0

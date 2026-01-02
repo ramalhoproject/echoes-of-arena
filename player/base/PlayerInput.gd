@@ -1,14 +1,20 @@
-extends Node # Define que este objeto é um nó simples na árvore de cena
+extends Node
+class_name PlayerInput
+# Responsável por gerenciar e filtrar os inputs do player local
 
-# Variáveis globais para armazenar o estado do input que será lido pelo script de movimento (Parent)
+# ==============================================================================
+# VARIÁVEIS DE ESTADO (Lidas pelo PlayerMovement)
+# ==============================================================================
 var movementDirection : float = 0.0  # Direção horizontal (-1.0 esquerda, 1.0 direita, 0 parado)
-var jumpIntent : bool = false      # Estado do pulo (true se foi pressionado o botão de pular)
-var jumpReleased : bool = false      # Estado do pulo (true se foi soltado o botão de pular)
-var shiftPressed : bool = false      # Estado do shift (true se estiver pressionando o botão de shift)
+var jumpIntent : bool = false       # Estado do pulo (true se foi pressionado o botão de pular)
+var jumpReleased : bool = false     # Estado do pulo (true se foi soltado o botão de pular)
+var shiftPressed : bool = false     # Estado do shift (true se estiver pressionando o botão de shift)
 
-# Função chamada a cada frame do jogo
-func _process(_delta):
-	# Se não houver conexão de rede OU se este script não for o "dono" (autoridade) deste player, interrompe aqui
+# ==============================================================================
+# LOOP DE PROCESSAMENTO
+# ==============================================================================
+func _process(_delta: float) -> void:
+	# Se não houver conexão de rede OU se este script não for o "dono", interrompe aqui
 	if multiplayer.multiplayer_peer == null or not get_parent().is_multiplayer_authority():
 		return
 	
@@ -17,72 +23,71 @@ func _process(_delta):
 	
 	# --- Lógica de bloqueio enquanto o CHAT (LineEdit) está aberto ---
 	if focusOwner is LineEdit:
-		movementDirection = 0 # Zera o movimento para o player não andar sozinho enquanto digita
-		jumpIntent = false    # Impede que o player pule enquanto digita
-		
-		# Verifica se o jogador apertou ESC (ui_cancel) especificamente para sair do chat
-		if Input.is_action_just_pressed("ui_cancel"):
-			focusOwner.release_focus() # Remove o foco do chat (fecha o teclado/cursor)
-			
-			get_viewport().set_input_as_handled() # Avisa o Godot que este ESC já foi "resolvido"
-		
-		return # Interrompe o script aqui para não processar os comandos de movimento abaixo
+		_handle_chat_input_block(focusOwner)
+		return 
 
-	# --- Movimentação normal (só ocorre se o chat estiver fechado) ---
-	# Lê a diferença entre as teclas direita e esquerda e atribui um valor entre -1 e 1
-	movementDirection = Input.get_axis("ui_left", "ui_right")
-	
-	# Verifica se a tecla configurada para "pular" (seta para cima/W) está sendo pressionada
-	if Input.is_action_just_pressed("ui_up"):
-		jumpIntent = true
-		jumpReleased = false
-	# Verifica se a tecla configurada para "pular" (seta para cima/W) está foi solta
-	if Input.is_action_just_released("ui_up"):
-		jumpReleased = true
-	
-	# Verifica se a tecla configurada para "shift" está sendo pressionada
-	shiftPressed = Input.is_action_pressed("shift")
+	# --- Processamento de Gameplay (Chat Fechado) ---
+	_process_gameplay_input()
 
-# Função para capturar inputs que a interface (UI) não consumiu
-func _unhandled_input(event: InputEvent):
+# ==============================================================================
+# CAPTURA DE EVENTOS (UI e Menu)
+# ==============================================================================
+func _unhandled_input(event: InputEvent) -> void:
 	# Garante que apenas o jogador local processe estes comandos globais
 	if not get_parent().is_multiplayer_authority():
 		return
 
 	# --- ESC para o MENU ---
-	# Se chegar aqui, o ESC não foi consumido pelo chat no _process acima, então abre o pause
 	if event.is_action_pressed("ui_cancel"):
-		_gerenciar_pause() # Chama a função que mostra/esconde o menu de pause
-		
-		get_viewport().set_input_as_handled() # Marca o evento como resolvido
+		_gerenciar_pause()
+		get_viewport().set_input_as_handled()
 
-	# --- ENTER (ui_accept) ---
+	# --- ENTER para o CHAT ---
 	if event.is_action_pressed("ui_accept"):
-		# Tenta encontrar o menu de pause na cena
-		var pause_menu = get_tree().get_first_node_in_group("PauseMenu")
-		
-		# Se o menu de pause estiver visível, fecha ele antes de abrir o chat
-		if pause_menu and pause_menu.visible:
-			pause_menu.visible = false
-		
-		_gerenciar_foco_chat() # Chama a função que coloca o cursor no campo de texto
-		
-		get_viewport().set_input_as_handled() # Marca o evento como resolvido
+		_handle_enter_press()
+		get_viewport().set_input_as_handled()
 
-# Função auxiliar para focar no campo de entrada do chat
-func _gerenciar_foco_chat():
-	# Busca o LineEdit do chat pelo grupo que configuramos
-	var chat_input = get_tree().get_first_node_in_group("ChatInputGroup")
+# ==============================================================================
+# MÉTODOS AUXILIARES E LÓGICA INTERNA
+# ==============================================================================
+func _process_gameplay_input() -> void:
+	# Movimentação Horizontal
+	movementDirection = Input.get_axis("ui_left", "ui_right")
 	
-	# Se o chat existir e ainda não estiver focado, aplica o foco (abre para digitar)
-	if chat_input and not chat_input.has_focus():
-		chat_input.grab_focus()
+	# Lógica de Pulo (Garante que o pulo variável e o buffer funcionem)
+	if Input.is_action_just_pressed("ui_up"):
+		jumpIntent = true
+		jumpReleased = false
+		
+	if Input.is_action_just_released("ui_up"):
+		jumpReleased = true
+	
+	# Shift (Caminhada Lenta)
+	shiftPressed = Input.is_action_pressed("shift")
 
-# Função auxiliar para alternar a visibilidade do menu de pause
-func _gerenciar_pause():
-	# Busca o nó da interface de pause pelo grupo
-	var pause_menu = get_tree().get_first_node_in_group("PauseMenu")
+func _handle_chat_input_block(focusOwner: Control) -> void:
+	movementDirection = 0.0 # Zera o movimento para o player não andar sozinho enquanto digita
+	jumpIntent = false      # Impede que o player pule enquanto digita
 	
-	# Se o menu existir, inverte o estado atual (se está visível, some; se está sumido, aparece)
-	if pause_menu:
-		pause_menu.visible = !pause_menu.visible
+	# Sai do chat ao apertar ESC
+	if Input.is_action_just_pressed("ui_cancel"):
+		focusOwner.release_focus()
+		get_viewport().set_input_as_handled()
+
+func _handle_enter_press() -> void:
+	# Se o menu de pause estiver visível, fecha ele antes de abrir o chat
+	var pauseMenu = get_tree().get_first_node_in_group("PauseMenu")
+	if pauseMenu and pauseMenu.visible:
+		pauseMenu.visible = false
+	
+	_gerenciar_foco_chat()
+
+func _gerenciar_foco_chat() -> void:
+	var chatInput = get_tree().get_first_node_in_group("ChatInputGroup")
+	if chatInput and not chatInput.has_focus():
+		chatInput.grab_focus()
+
+func _gerenciar_pause() -> void:
+	var pauseMenu = get_tree().get_first_node_in_group("PauseMenu")
+	if pauseMenu:
+		pauseMenu.visible = !pauseMenu.visible
