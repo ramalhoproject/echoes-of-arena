@@ -60,7 +60,7 @@ func _handle_animation_state() -> void:
 	
 	if horizontalSpeed == 0:
 		play("idle")
-	elif horizontalSpeed > player.speed / 2.0:
+	elif horizontalSpeed > player.maxSpeed / 2.0:
 		play("run")
 	else:
 		play("walk")
